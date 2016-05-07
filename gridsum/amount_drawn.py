@@ -1,0 +1,39 @@
+# -*- coding: utf-8 -*-
+
+import sys
+import imp
+import re
+imp.reload(sys)
+sys.setdefaultencoding('utf-8')
+#unit=[u'美元',u'元']
+
+f=open('custom.dict','rb')
+dict=[]
+for line in f:
+    dict.append(line.strip())
+f.close()
+fp=open('data1.txt','rb')
+test0=[]
+test1=[]
+test2=[]
+for line in fp:
+    content=line.split('\t')
+    items=re.findall(r'[\d+\.\d+|\d+]{3,}',content[1])
+    content1=content[1].split()
+    for item in items:
+        if item in content1:
+            a=content1.index(item)
+#            if content1[a+1] in unit:
+            for x in range(0,5):
+                if a-x >= 0:
+                    if content1[a-x] in dict:
+                        test0.append(content[0])
+                        test1.append(content1[a-x])
+                        test2.append(item)
+                        break
+fp.close()
+f=open('new_amount_consequence1.csv','wb')
+f.write('documentid'+','+'property'+','+'value'+'\n')
+for x in range(0,len(test0)):
+    f.write(test0[x]+','+test1[x]+','+test2[x]+'\n')
+f.close()
